@@ -1,0 +1,9 @@
+.paket/
+.vs/
+packages/
+**/bin/
+**/obj/
+**/node_modules/
+**/wwwroot/*
+!**/wwwroot/-.-
+

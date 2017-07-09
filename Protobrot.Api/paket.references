@@ -1,0 +1,5 @@
+Microsoft.AspNetCore
+Microsoft.AspNetCore.Mvc
+Microsoft.AspNetCore.StaticFiles
+Microsoft.Extensions.Logging.Debug
+Microsoft.Extensions.Logging.Console

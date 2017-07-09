@@ -1,0 +1,15 @@
+﻿{
+	"compilerOptions": {
+		"module": "es6",
+		"target": "es6",
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"outDir": "./obj/.ts.output"
+	},
+	"include": [
+		"./Client/**/*"
+	]
+}
