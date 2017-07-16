@@ -110,21 +110,17 @@ namespace Protobrot.Image
 			var fex = extent.E.X;
 			var fey = extent.E.Y;
 
-			var bitmap = new double[width, height];
-			var stats = Calculate(0, 0, iex, iey, fsx, fsy, fex, fey, iterations, bitmap);
-			var histogram = Normalize(stats);
-			Render(image, palette, bitmap, histogram, 0, 0, iex, iey);
+			Render(0, 0, iex, iey, fsx, fsy, fex, fey, iterations, image, palette);
 		}
 
-		private static int[] Calculate(
+		private static void Render(
 			int isx, int isy, int iex, int iey,
 			double fsx, double fsy, double fex, double fey,
-			int iterations, double[,] bitmap)
+			int iterations,
+			SKBitmap image, SKColor[] palette)
 		{
-			var stats = new int[iterations];
-
-			for (var iy = isy; iy < iey; iy++)
-			for (var ix = isx; ix < iex; ix++)
+			for (var iy = isy; iy <= iey; iy++)
+			for (var ix = isx; ix <= iex; ix++)
 			{
 				var z = Complex.Zero;
 				var c = Complex.Create(
@@ -149,49 +145,14 @@ namespace Protobrot.Image
 				}
 
 				i = (int) Math.Floor(f);
-				if (i < iterations)
-					stats[i]++;
-				bitmap[ix - isx, iy - isy] = f;
-			}
 
-			return stats;
-		}
-
-		private static double[] Normalize(int[] stats)
-		{
-			var iterations = stats.Length;
-			var total = stats.Sum();
-			var histogram = new double[iterations];
-			for (var i = 0; i < iterations; i++)
-			{
-				histogram[i] = (double) stats[i] / total;
-				if (i > 0)
-					histogram[i] += histogram[i - 1];
-			}
-
-			return histogram;
-		}
-
-		private static void Render(
-			SKBitmap image, SKColor[] palette, 
-			double[,] bitmap, double[] histogram,
-			int isx, int isy, int iex, int iey)
-		{
-			var iterations = histogram.Length;
-
-			for (var iy = isy; iy < iey; iy++)
-			for (var ix = isx; ix < iex; ix++)
-			{
-				var f = bitmap[ix - isx, iy - isy];
-				var i = (int) Math.Floor(f);
 				if (i >= iterations)
 				{
 					image.SetPixel(ix, iy, SKColor.Empty);
 					continue;
 				}
 
-				var hue = MathEx.Translate(f - i, 0, 1, histogram[i - 1], histogram[i]);
-				var color = Interpolate(palette, MathEx.Translate(hue, 0, 1, 0, palette.Length - 1));
+				var color = Interpolate(palette, MathEx.Translate(f, 0, iterations - 1, 0, palette.Length - 1));
 				image.SetPixel(ix, iy, color);
 			}
 		}
